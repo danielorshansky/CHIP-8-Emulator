@@ -8,19 +8,19 @@ struct AudioData {
     int tone;
     int volume;
     int wave_period;
-    Uint32 length;
-    Uint16* buffer;
+    uint32_t length;
+    uint16_t* buffer;
     SDL_AudioDeviceID device;
 };
 
-void audio_callback(void* user_data, Uint8* stream, int length) {
+void audio_callback(void* user_data, uint8_t* stream, int length) {
     struct AudioData* data = (struct AudioData*)user_data;
-    static Uint32 count = 0;
+    static uint32_t count = 0;
 
-    Uint16* sample = (Uint16*)stream;
+    uint16_t* sample = (uint16_t*)stream;
     int samples = length / data->bytes_per_sample;
     for(int i = 0; i < samples; i++) {
-        Uint16 tone_value = round((data->volume * sin(2 * M_PI * (float)count / (float)data->wave_period)));
+        uint16_t tone_value = round((data->volume * sin(2 * M_PI * (float)count / (float)data->wave_period)));
         *sample++ = tone_value;
         *sample++ = tone_value;
         ++count;
@@ -29,7 +29,7 @@ void audio_callback(void* user_data, Uint8* stream, int length) {
 
 void init_audio(struct AudioData* data) {
     data->samples_per_second = 48000;
-    data->bytes_per_sample = 2 * sizeof(Sint16);
+    data->bytes_per_sample = 2 * sizeof(int16_t);
     data->volume = 3000;
     data->tone = 440;
     data->wave_period = data->samples_per_second / data->tone;
