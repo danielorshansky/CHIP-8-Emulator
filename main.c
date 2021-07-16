@@ -7,7 +7,7 @@
 #include "audio.h"
 #include "cpu.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     srand(time(0));
 
     struct Display display;
@@ -20,6 +20,9 @@ int main(int argc, char *argv[]) {
     init_audio(&audio);
 
     struct CPU cpu;
+    init_cpu(&cpu, &display, &keyboard, &audio);
+
+    load_rom(&cpu, argv[1]);
 
     float frame = 1000 / 60.0;
     uint32_t last_time = SDL_GetTicks();
@@ -31,16 +34,16 @@ int main(int argc, char *argv[]) {
                 running = 0;
             }
         }
-        handle_input(&keyboard, cpu.paused, cpu.v[cpu.x]);
+        handle_input(&keyboard, &cpu.paused, &cpu.v[cpu.x]);
 
         uint32_t time = SDL_GetTicks();
         if (time - last_time > frame) {
-            render(&display); // TODO: maybe put outside of frame controlled area? well see
+            cycle(&cpu);
             last_time = time;
         }
     }
 
-    destroy_graphics(&display);
+    clean(&cpu);
 
     return 0;
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdlib.h>
 
 #include "SDL2/SDL.h"
@@ -21,15 +23,15 @@ int key_pressed(struct Keyboard* keyboard, int index) {
     return keyboard->pressed[index];
 }
 
-void handle_input(struct Keyboard* keyboard, int& paused, uint8_t& vx) {
+void handle_input(struct Keyboard* keyboard, int* paused, uint8_t* vx) {
     const uint8_t* keystate = SDL_GetKeyboardState(NULL);
     for (int i = 0; i < NUM_KEYS; i++) {
         if (keyboard->pressed[i] != keystate[keybinds[i]]) {
             keyboard->pressed[i] = keystate[keybinds[i]];
             if (keyboard->pressed[i]) {
                 if (keyboard->on_next_press) {
-                    paused = 0;
-                    vx = keys[i];
+                    *paused = 0;
+                    *vx = keys[i];
                     keyboard->on_next_press = 0;
                 }
             }
